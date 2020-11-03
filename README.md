@@ -1,3 +1,3 @@
 # woj_laurhy
 WOJ-kurssin repo
-WOJ-kurssin tehtäviä varten julkinen repo
+WOJ-kurssin tehtäviä varten
