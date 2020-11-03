@@ -8,7 +8,7 @@ http.createServer(function(request, response){
     // Luetaan html filu ja palautetaan se selaimelle
     // Toki tässä ei ole järkeä, koska filu voidaan lukea suoraankin
     
-    fs.readFile("test.htm", function(err, data){
+    fs.readFile("node.html", function(err, data){
         response.writeHead(200, {'Content-Type' : 'text/html'});
         response.write(data);
         response.end();    
