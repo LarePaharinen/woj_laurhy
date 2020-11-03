@@ -1,20 +1,16 @@
-
-// Asenna ensin express npm install express --save
-
-var express = require('express');  //Käytetään pyyntöjen reitittämiseen
-var app=express();
-
-// Otetaan käyttöön body-parser, jotta voidaan html-requestista käsitellä viestin body post requestia varten... *
-var bodyParser = require('body-parser');
-// Pyyntöjen reitittämistä varten voidaan käyttää Controllereita
-var customerController = require('./customerController');
-
+var express = require('express'); 
+var fs = require("fs");
+var util=require('util');
 const http = require('http');
 const url = require('url');
+var bodyParser = require('body-parser');
+
+var customerController = require('./customerController');
+
+var app=express();
 
 const hostname = '127.0.0.1';
 const port = process.env.PORT || 3002;
-
 
 //CORS middleware
 var allowCrossDomain = function(req, res, next) {
@@ -57,9 +53,11 @@ app.route('/Asiakas/:id')
 //
 
 app.get('/', function(request, response){
-    response.statusCode = 200;
-    response.setHeader('Content-Type', 'text/plain');
-    response.end("Terve maailma"); 
+    fs.readFile("node.html", function(err, data){
+        response.writeHead(200, {'Content-Type' : 'text/html'});
+        response.write(data);
+        response.end();    
+    });
 });
 
 app.get('/maali', function(request, response){

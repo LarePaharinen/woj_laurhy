@@ -57,8 +57,17 @@ module.exports =
     },
 
     delete : function (req, res) {
-      console.log("Body = " + JSON.stringify(req.body));
-      console.log("Params = " + JSON.stringify(req.params));
-      res.send("Kutsuttiin delete");
+      connection.query('DELETE FROM Asiakas WHERE AVAIN="' + req.params.id +'";', function(error, results, fields){
+        if ( error ){
+          console.log('Virhe haettaessa dataa Asiakas-taulusta: ' + error);
+          res.status(500);
+          res.json({'status' : 'ei toimi'});
+        }
+        else
+        {
+          console.log('Data = ' + JSON.stringify(results));
+          res.json(results); //Onnistunut haku tietokannasta, lähetetään data sitä pyytäneelle (usein selain)
+        }
+      });
     }
 }
