@@ -24,9 +24,22 @@ $().ready (() => {
         }});
     }
 
+
+    fetchAll = () => {
+        $.get({
+            url: `http://127.0.0.1:3002/Asiakas`,
+            success: (result) => {
+                showResultInTable(result, astys);
+        }});
+    }
+
     // bindataan click-event
     $('#searchBtn').click(() => {
         fetch();
+    });
+    
+    $('#showAll').click(() => {
+        fetchAll();
     });
 
     // otetaan kaikki asiakaanlisäysformin elementit yhteen muuttujaan

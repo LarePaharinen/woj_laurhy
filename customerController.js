@@ -32,20 +32,39 @@ module.exports =
     },
 
     fetchAll: function(req, res){
-      connection.query('SELECT * FROM Asiakas WHERE ASTY_AVAIN='+req.query.asty_avain, function(error, results, fields){
+      
+      var $query = 'SELECT * FROM ASIAKAS';
+
+      
+      var $where = '';
+
+      if(req.params.nimi != undefined)
+        $where += 'WHERE nimi=\''+req.params.nimi+'\'';
+      if(req.params.osoite != undefined)
+        if($where != '')
+          $where += 'AND osoite=\''+req.params.osoite+'\'';
+        else
+          $where += 'WHERE osoite=\''+req.params.osoite+'\'';
+      if(req.params.asty_avain != undefined)
+        if($where != '')
+          $where += 'AND ASTY_AVAIN='+req.params.asty_avain+';';
+        else
+          $where += 'WHERE ASTY_AVAIN='+req.params.asty_avain+';';
+
+      connection.query('SELECT * FROM Asiakas'+$where, function(error, results, fields){ 
         if ( error ){
           console.log('Virhe haettaessa dataa Asiakas-taulusta: ' + error);
           res.status(500);
           res.json({'status' : 'ei toimi'});
-        }
-        else
-        {
+          }
+        else{
           console.log('params '+JSON.stringify(req.params));
           console.log('body'+JSON.stringify(req.body));
           console.log('query'+JSON.stringify(req.query));
           res.json(results); //Onnistunut haku tietokannasta, lähetetään data sitä pyytäneelle (usein selain)
         }
       });
+      
     },
 
     create: function(req, res){
