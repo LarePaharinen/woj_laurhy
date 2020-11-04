@@ -38,21 +38,24 @@ module.exports =
       
       var $where = '';
 
-      if(req.params.nimi != undefined)
-        $where += 'WHERE nimi=\''+req.params.nimi+'\'';
-      if(req.params.osoite != undefined)
+      console.log('Nimi: ' + req.query.nimi);
+      if(req.query.nimi != undefined)
+        $where +=  ` WHERE nimi LIKE "%${req.query.nimi}%"`;
+      if(req.query.osoite != undefined)
         if($where != '')
-          $where += 'AND osoite=\''+req.params.osoite+'\'';
+          $where += ` AND osoite like '%${req.query.osoite}%'`;
         else
-          $where += 'WHERE osoite=\''+req.params.osoite+'\'';
-      if(req.params.asty_avain != undefined)
+          $where += ` WHERE osoite LIKE '%${req.query.osoite}%'`;
+      if(req.query.asty_avain != undefined && req.query.asty_avain != 'all')
         if($where != '')
-          $where += 'AND ASTY_AVAIN='+req.params.asty_avain+';';
+          $where += ' AND ASTY_AVAIN='+req.query.asty_avain;
         else
-          $where += 'WHERE ASTY_AVAIN='+req.params.asty_avain+';';
+          $where += ' WHERE ASTY_AVAIN='+req.query.asty_avain;
+        console.log($where);
 
-      connection.query('SELECT * FROM Asiakas'+$where, function(error, results, fields){ 
+      connection.query($query+$where+';', function(error, results, fields){ 
         if ( error ){
+          console.log($query+$where);
           console.log('Virhe haettaessa dataa Asiakas-taulusta: ' + error);
           res.status(500);
           res.json({'status' : 'ei toimi'});
@@ -64,8 +67,11 @@ module.exports =
           res.json(results); //Onnistunut haku tietokannasta, lähetetään data sitä pyytäneelle (usein selain)
         }
       });
+
+      console.log('----');
       
     },
+    
 
     create: function(req, res){
       console.log("Data = " + JSON.stringify(req.body));

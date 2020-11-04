@@ -133,11 +133,13 @@ validateAddCust = (form) => {
 searcParameters = () => {
     let str = '';
     if ($('#name').val().trim() != '') {
-        let name = $('#name').val().trim();
+        var name = $('#name').val().trim();
+        name = name.replace(/[^a-zA-Z0-9]/gi, '');
         str += `?nimi=${name}`;
     }
     if ($('#address').val().trim() != '') {
-        let address = $('#address').val().trim();
+        var address = $('#address').val().trim();
+        address = address.replace(/[^a-zA-Z0-9]/gi, '');
         if (str == '') {
             str += '?';
             str += `osoite=${address}`;
@@ -145,7 +147,7 @@ searcParameters = () => {
             str += `&osoite=${address}`;
     }
     if ($('#custType').val() !== null) {
-        let custType = $('#custType').val();
+        var custType = $('#custType').val();
         if (str == '') {
             str += '?';
             str+=`asty_avain=${custType}`;
@@ -163,7 +165,7 @@ showResultInTable = (result, astys) => {
         trstr += "<td>" + element.OSOITE + "</td>\n";
         trstr += "<td>" + element.POSTINRO + "</td>\n";
         trstr += "<td>" + element.POSTITMP + "</td>\n";
-        trstr += "<td>" + element.LUONTIPVM + "</td>\n";
+        trstr += "<td>" + element.LUONTIPVM.replace(/[TZ]/gi," ") + "</td>\n";
         astys.forEach(asty => {
             if (asty.Avain === element.ASTY_AVAIN) {
                 trstr += "<td>" + toTitleCase(asty.Selite) + "</td>";
