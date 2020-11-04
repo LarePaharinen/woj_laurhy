@@ -32,7 +32,7 @@ module.exports =
     },
 
     fetchAll: function(req, res){
-      connection.query('SELECT * FROM Asiakas', function(error, results, fields){
+      connection.query('SELECT * FROM Asiakas WHERE ASTY_AVAIN='+req.query.asty_avain, function(error, results, fields){
         if ( error ){
           console.log('Virhe haettaessa dataa Asiakas-taulusta: ' + error);
           res.status(500);
@@ -40,7 +40,9 @@ module.exports =
         }
         else
         {
-          console.log('Data = ' + JSON.stringify(results));
+          console.log('params '+JSON.stringify(req.params));
+          console.log('body'+JSON.stringify(req.body));
+          console.log('query'+JSON.stringify(req.query));
           res.json(results); //Onnistunut haku tietokannasta, lähetetään data sitä pyytäneelle (usein selain)
         }
       });

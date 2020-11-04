@@ -7,7 +7,7 @@ $().ready (() => {
         success: (result) => {
             astys = result;
             result.forEach((r) => {
-                let optstr = `<option value="${r.avain}">${r.lyhenne + " " + toTitleCase(r.selite)}</option>`;
+                let optstr = `<option value="${r.Avain}">${r.Lyhenne + " " + toTitleCase(r.Selite)}</option>`;
                 $('#custType').append(optstr);
                 $('#custCustType').append(optstr);
             });
@@ -18,7 +18,7 @@ $().ready (() => {
     fetch = () => {
         let sp = searcParameters();
         $.get({
-            url: `http://127.0.0.1:3002/Asiakas`,
+            url: `http://127.0.0.1:3002/Asiakas` + sp,
             success: (result) => {
                 showResultInTable(result, astys);
         }});
@@ -121,21 +121,23 @@ searcParameters = () => {
     let str = '';
     if ($('#name').val().trim() != '') {
         let name = $('#name').val().trim();
-        str += `nimi=${name}`;
+        str += `?nimi=${name}`;
     }
     if ($('#address').val().trim() != '') {
         let address = $('#address').val().trim();
-        if (str !== '') {
-            str += '&';
-        }
-        str += `osoite=${address}`;
+        if (str == '') {
+            str += '?';
+            str += `osoite=${address}`;
+        }else
+            str += `&osoite=${address}`;
     }
     if ($('#custType').val() !== null) {
         let custType = $('#custType').val();
-        if (str !== '') {
-            str += '&';
-        }
-        str+=`asty_avain=${custType}`;
+        if (str == '') {
+            str += '?';
+            str+=`asty_avain=${custType}`;
+        }else
+            str+=`&asty_avain=${custType}`;
     }
     return str;
 }
