@@ -24,7 +24,6 @@ module.exports =
         }
         else
         {
-          console.log('Data = ' + JSON.stringify(results));
           res.json(results); //Onnistunut haku tietokannasta, lähetetään data sitä pyytäneelle (usein selain)
         }
     });
@@ -38,7 +37,6 @@ module.exports =
       
       var $where = '';
 
-      console.log('Nimi: ' + req.query.nimi);
       if(req.query.nimi != undefined)
         $where +=  ` WHERE nimi LIKE "%${req.query.nimi}%"`;
       if(req.query.osoite != undefined)
@@ -51,24 +49,17 @@ module.exports =
           $where += ' AND ASTY_AVAIN='+req.query.asty_avain;
         else
           $where += ' WHERE ASTY_AVAIN='+req.query.asty_avain;
-        console.log($where);
 
       connection.query($query+$where+';', function(error, results, fields){ 
         if ( error ){
-          console.log($query+$where);
           console.log('Virhe haettaessa dataa Asiakas-taulusta: ' + error);
           res.status(500);
           res.json({'status' : 'ei toimi'});
           }
         else{
-          console.log('params '+JSON.stringify(req.params));
-          console.log('body'+JSON.stringify(req.body));
-          console.log('query'+JSON.stringify(req.query));
           res.json(results); //Onnistunut haku tietokannasta, lähetetään data sitä pyytäneelle (usein selain)
         }
       });
-
-      console.log('----');
       
     },
     
