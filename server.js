@@ -50,7 +50,7 @@ app.route('/Asiakas')
 app.route('/Asiakas/:id')
     .put(customerController.update)
     .delete(customerController.delete);
-//
+
 
 app.get('/', function(request, response){
     fs.readFile("node.html", function(err, data){

@@ -60,6 +60,7 @@ $().ready (() => {
         close: function() {
             form[0].reset();
             allFields.removeClass("ui-state-error");
+            $('#warning').hide();
         }
     });
 
@@ -76,20 +77,52 @@ $().ready (() => {
 
     // tekee post-kutsun palvelimelle ja vastauksen saatuaan jatkaa
     addCust = (param) => {
-        $.post("https://codez.savonia.fi/jussi/api/asiakas/lisaa.php", param)
-            .then((data) => {
-                showAddCustStat(data);
+        $.post("http://127.0.0.1:3002/Asiakas", param)
+            .done(function() {
+                $('#addStatus').css("color", "green").text("Asiakkaan lisääminen onnistui").show().fadeOut(6000);
                 $('#addCustDialog').dialog("close");
                 fetch();
-            });
+              })
+            .fail(function(res) {
+                console.log(res);
+                
+                console.log(res.responseJSON.virhe.length);
+
+                var inputs = form.find('input');
+
+                for (var i=0;i<res.responseJSON.virhe.length;i++){
+                    console.log(res.responseJSON.virhe[i]);
+                    if(res.responseJSON.virhe[i] != null){
+                        console.log(i);
+                        if(i < 4){
+                            inputs[i].classList.toggle("ui-state-error", true);
+                        }else{
+                            form.find('select')[0].classList.toggle("ui-state-error", true);
+                        }
+                    }else{
+                        if(i < 4){
+                            inputs[i].classList.toggle("ui-state-error", false);
+                        }else{
+                            form.find('select')[0].classList.toggle("ui-state-error", false);
+                        }
+                    }
+                }
+
+                $('#warning').show();
+                
+              })
+            
     }
+
+
 
     // näyttää lisäyksen onnistumisen tai epäonnistumisen
     showAddCustStat = (data) => {
-        if (data.status == 'ok') {
+        if (status == 'ok') {
             $('#addStatus').css("color", "green").text("Asiakkaan lisääminen onnistui")
             .show().fadeOut(6000);
         } else {
+            console.log(data);
             $('#addStatus').css("color", "red").text("Lisäämisessä tapahtui virhe: " + data.status_text).show();
         }
     }
@@ -105,7 +138,11 @@ $().ready (() => {
 
 // tarkistaa onko dialogin kentät täytetty ja näyttää varoitukset jos ei
 validateAddCust = (form) => {
-    let inputs = form.find('input');
+    return true;
+
+
+    //Vanha toiminnallisuus kommentoitu pois, jotta voi kokeilla palvelin-puolen kenttien tarkistusta
+    /*let inputs = form.find('input');
     let valid = true;
     for (let i = 0; i < inputs.length; i++) {
         if (inputs[i].value == '') {
@@ -126,7 +163,7 @@ validateAddCust = (form) => {
         return true;
     }
     $('#warning').show();
-    return false;
+    return false;*/
 }
 
 // palauttaa hakuparametri-stringin jos kentät eivät ole tyhjiä
@@ -176,6 +213,7 @@ showResultInTable = (result, astys) => {
         $('#data tbody').append(trstr);
     });
 }
+
 
 // poistetaan asiakas
 deleteCustomer = (key) => {
