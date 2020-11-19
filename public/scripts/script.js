@@ -84,10 +84,6 @@ $().ready (() => {
                 fetch();
               })
             .fail(function(res) {
-                console.log(res);
-                
-                console.log(res.responseJSON.virhe.length);
-
                 var inputs = form.find('input');
 
                 for (var i=0;i<res.responseJSON.virhe.length;i++){

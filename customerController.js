@@ -95,7 +95,8 @@ module.exports =
       }
 
       var rightNow = new Date();
-      var query = `INSERT INTO Asiakas (NIMI, OSOITE, POSTINRO, POSTITMP, LUONTIPVM, ASTY_AVAIN) values ('${req.body.nimi}','${req.body.osoite}','${req.body.postinro}', '${req.body.postitmp}', '${rightNow.toISOString().slice(0,10).replace(/-/g,"")}' ,'${req.body.asty_avain}');`;
+      var query = `INSERT INTO Asiakas (NIMI, OSOITE, POSTINRO, POSTITMP, LUONTIPVM, ASTY_AVAIN) values ('${req.body.nimi}',
+        '${req.body.osoite}','${req.body.postinro}', '${req.body.postitmp}', '${rightNow.toISOString().slice(0,10).replace(/-/g,"")}' ,'${req.body.asty_avain}');`;
       connection.query(query, function(error, results){
         if ( error ){
           console.log('Virhe haettaessa dataa Asiakas-taulusta: ' + error);
