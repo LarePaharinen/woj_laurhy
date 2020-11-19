@@ -59,7 +59,7 @@
 
     <div class="addCustDialog" id="addCustDialog" title="Asiakkaan lisääminen">
         <div class="addCustDiv" id="addCustDiv">
-            <form>
+            <form id="addCustForm">
                 <fieldset style="margin-bottom: 1rem;">
                     <legend>Asiakkaan tiedot</legend>
                     <div class="gridContainer">
@@ -79,6 +79,34 @@
                 </fieldset>
                 <p id="warning" class="warning">Kaikki kentät ovat pakollisia!</p>
                 <input type="submit" value="Lisää" id="addCustSubmit">
+            </form>
+        </div>
+    </div>
+
+    <div class="modCustDialog" id="modCustDialog" title="Asiakaan muokkaus">
+        <div class="modCustDiv" id="modCustDiv">
+            <form id="modCustForm">
+                <fieldset style="margin-bottom:1rem;">
+                    <legend>Asiakkaan tiedot</legend>
+                    <div class="gridContainer">
+                        <input type="text" name="avain" id="modCustKey" hidden value="">
+                        <label for="custName">Nimi</label>
+                        <input type="text" name="nimi" id="modCustName">
+                        <label for="custAddress">Osoite</label>
+                        <input type="text" name="osoite" id="modCustAddress">
+                        <label for="custPostNbr">Postinumero</label>
+                        <input type="text" name="postinro" id="modCustPostNbr">
+                        <label for="custPostOff">Postitoimipaikka</label>
+                        <input type="text" name="postitmp" id="modCustPostOff">
+                        <label for="custType">Asiaskastyyppi: </label>
+                        <select name="asty_avain" class="custType" id="modCustCustType">
+                            <option value="empty" disabled>Valitse asiakastyyppi...</option>
+                        </select>
+                    </div>
+                </fieldset>
+                <p id="warning" class="warning">Kaikki kentät ovat pakollisia!</p>
+                <input type="button" value="Peruuta" id="modCustCancel">
+                <input type="submit" value="Tallenna tiedot" id="modCustSubmit">
             </form>
         </div>
     </div>

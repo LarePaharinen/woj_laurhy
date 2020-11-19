@@ -112,7 +112,24 @@ module.exports =
   
 
     update: function(req, res){
-      
+      connection.query(`UPDATE Asiakas SET
+        NIMI='${req.body.nimi}',
+        OSOITE='${req.body.osoite}',
+        POSTINRO='${req.body.postinro}',
+        POSTITMP='${req.body.postitmp}',
+        asty_avain='${req.body.asty_avain}'
+        WHERE AVAIN=${req.params.id};`, function(error, results, fields){
+        if ( error ){
+          console.log('Virhe haettaessa dataa Asiakas-taulusta: ' + error);
+          res.status(500);
+          res.json({'status' : 'ei toimi'});
+        }
+        else
+        {
+          console.log('Asiakkaan tiedot muokattu. Data = ' + JSON.stringify(results));
+          res.json(results);
+        }
+      });
     },
 
     delete : function (req, res) {

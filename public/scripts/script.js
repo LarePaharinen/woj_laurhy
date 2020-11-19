@@ -10,6 +10,7 @@ $().ready (() => {
                 let optstr = `<option value="${r.Avain}">${r.Lyhenne + " " + toTitleCase(r.Selite)}</option>`;
                 $('#custType').append(optstr);
                 $('#custCustType').append(optstr);
+                $('#modCustCustType').append(optstr);
             });
         }
     });
@@ -44,11 +45,14 @@ $().ready (() => {
 
     // otetaan kaikki asiakaanlisäysformin elementit yhteen muuttujaan
     let allFields = $([])
+        .add($('#custKey'))
         .add($('#custName'))
         .add($('#custAddress'))
         .add($('#custPostNbr'))
         .add($('#custPostOff'))
         .add($('#custCustType'));
+
+
 
     // luodaan asiakkaanlisäysdialogi
     let dialog = $('#addCustDialog').dialog({
@@ -64,8 +68,9 @@ $().ready (() => {
         }
     });
 
+    //dialog.find("form")
     // luodaan formi
-    let form = dialog.find("form")
+    let form = $("#addCustForm")
         .on("submit", (event) => {
             event.preventDefault();
             if (validateAddCust(form)) {
@@ -75,13 +80,41 @@ $().ready (() => {
         }
     );
 
+    // luodaan asiakkaanlisäysdialogi
+    let dialog1 = $('#modCustDialog').dialog({
+        autoOpen: false,
+        modal: true,
+        resizable: false,
+        minWidth: 400,
+        width: 'auto',
+        close: function() {
+            form[0].reset();
+            allFields.removeClass("ui-state-error");
+            $('#warning').hide();
+        }
+    });
+
+    // luodaan formi
+    let form1 = $("#modCustForm")
+        .on("submit", (event) => {
+            event.preventDefault();
+            var key = $("#modCustKey").val();
+            let param = dialog1.find("form").serialize();
+            modCust(param, key);
+        }
+    );
+
+    
+
+    
+
     // tekee post-kutsun palvelimelle ja vastauksen saatuaan jatkaa
     addCust = (param) => {
         $.post("http://127.0.0.1:3002/Asiakas", param)
             .done(function() {
                 $('#addStatus').css("color", "green").text("Asiakkaan lisääminen onnistui").show().fadeOut(6000);
                 $('#addCustDialog').dialog("close");
-                fetch();
+                fetchAll();
               })
             .fail(function(res) {
                 var inputs = form.find('input');
@@ -110,6 +143,24 @@ $().ready (() => {
             
     }
 
+    modCust = (param, key) => {
+        $.ajax({
+            url: `http://127.0.0.1:3002/Asiakas/${key}`,
+            type: 'PUT',
+            data: param,
+            success: (result) => {
+                fetch();
+            }
+        })
+            .done(function(res){
+                $('#modCustDialog').dialog("close");
+                $('#addStatus').css("color", "green").text("Asiakkaan tietojen muokkaus onnistui").show().fadeOut(6000);
+            })
+            .fail(function(res){
+                $('#warning').show();
+            })
+    }
+
 
 
     // näyttää lisäyksen onnistumisen tai epäonnistumisen
@@ -130,6 +181,12 @@ $().ready (() => {
             $('#addCustDialog').dialog("open");
         }
     });
+
+    $('#modCustSubmit').click(() => {
+
+    });
+
+
 });
 
 // tarkistaa onko dialogin kentät täytetty ja näyttää varoitukset jos ei
@@ -199,12 +256,20 @@ showResultInTable = (result, astys) => {
         trstr += "<td>" + element.POSTINRO + "</td>\n";
         trstr += "<td>" + element.POSTITMP + "</td>\n";
         trstr += "<td>" + element.LUONTIPVM.replace(/[TZ]/gi," ") + "</td>\n";
+        var astyAvainData;
         astys.forEach(asty => {
             if (asty.Avain === element.ASTY_AVAIN) {
+                astyAvainData = asty.Avain; 
                 trstr += "<td>" + toTitleCase(asty.Selite) + "</td>";
             }
         });
         trstr += `<td><button onclick="deleteCustomer(${element.AVAIN});" class="deleteBtn">Poista</button></td>`;
+        trstr += `<td><button onclick="modifyCustomerOpen(this, ${element.AVAIN});" class="modifyBtn"
+            data-nimi='${element.NIMI}' 
+            data-osoite='${element.OSOITE}' 
+            data-postinro='${element.POSTINRO}' 
+            data-postitmp='${element.POSTITMP}' 
+            data-astyAvain='${astyAvainData}'>Muokkaa</button></td>`;
         trstr += "</tr>\n";
         $('#data tbody').append(trstr);
     });
@@ -223,6 +288,19 @@ deleteCustomer = (key) => {
             fetch();
         }
     });
+}
+
+modifyCustomerOpen = (element, key) => {
+    const isOpen = $('#modCustDialog').dialog("isOpen");
+    if (!isOpen) {
+        $('#modCustDialog').dialog("open");
+    }
+    $("#modCustName").val(element.getAttribute("data-nimi"));
+    $("#modCustAddress").val(element.getAttribute("data-osoite"));
+    $("#modCustPostNbr").val(element.getAttribute("data-postinro"));
+    $("#modCustPostOff").val(element.getAttribute("data-postitmp"));
+    $("#modCustKey").val(key);
+
 }
 
 toTitleCase = (str) => {
